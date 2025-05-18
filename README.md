@@ -64,13 +64,19 @@ solar-challenge-week1/
 │   ├── benin_clean.csv
 ├── notebooks/
 │   ├── benin_eda.ipynb
+├── reports/
 ├── scripts/
 │   ├── README.md
 │   ├── __init__.py
 │   ├── generate_tree.py
+│   ├── run_benin_pipeline.py
 ├── src/
+│   ├── clean.py
+│   ├── plots.py
+│   ├── report.py
 │   ├── Benin/
 │   │   ├── benin-malanville.csv
+│   │   ├── load.py
 │   ├── Sierra Leone/
 │   │   ├── sierraleone-bumbuna.csv
 │   └── Togo/
@@ -89,6 +95,7 @@ solar-challenge-week1/
  ☑︎ Project structured and committed
 
  ☐ Exploratory Data Analysis (in progress...)
+ + ☑︎ Benin EDA pipeline complete and modularized (Togo & Sierra Leone pending)
 
 
 ## 📦 What's in This Repo
@@ -101,11 +108,42 @@ This repository documents the Week 1 challenge for 10 Academy’s AI Mastery Boo
 
 - 🧹 **README auto-updating** via `scripts/generate_tree.py` to keep documentation aligned with project layout
 
-- 📊 **Planned EDA workflows** for Benin, Sierra Leone, and Togo to clean and compare solar datasets
+- 📊 **Modular EDA workflows** for Benin, Sierra Leone, and Togo to clean and compare solar datasets
 
 - 📚 **Clear Git hygiene** (no committed `.venv` or `.csv`), commit messages and pull request usage
 
 - 🧠 **My Contributions:** All project scaffolding, README setup, automation scripts, and CI configuration were done from scratch by me
+
+## 🧪 Usage
+
+To run the modular Benin pipeline:
+
+```bash
+python scripts/run_benin_pipeline.py
+```
+
+This script will:
+
+1. Load the raw Benin solar dataset from `src/Benin/benin-malanville.csv`
+
+2. Clean the data (outlier removal, median imputation)
+
+3. Export cleaned data to: `data/benin_clean.csv`
+
+4. Generate summary statistics and missing-value report in: reports/
+
+    - `benin_summary_stats.csv`
+    - `benin_missing_report.csv`
+
+5. Produce a full suite of visualizations:
+
+    - Time series plots of GHI, DNI, etc.
+    - Sensor cleaning impact
+    - Correlation heatmap
+    - Wind-solar pair plots
+    - Distributions and bubble chart
+
+⚠️ The pipeline is designed to run from the project root. If executing from /notebooks, it will auto-adjust the working directory.
 
 ## 🚀 Author
 Nabil Mohamed
