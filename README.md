@@ -60,39 +60,21 @@ solar-challenge-week1/
 │   └── workflows/
 │       ├── ci.yml
 │       ├── unittests.yml
+├── data/
+│   ├── benin_clean.csv
 ├── notebooks/
+│   ├── benin_eda.ipynb
 ├── scripts/
 │   ├── README.md
 │   ├── __init__.py
 │   ├── generate_tree.py
 ├── src/
 │   ├── Benin/
-│   │   ├── csps-yls_wapp_stationinstallationreport_benin-malanville_2021-08-08_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationinstallationreport_benin-parakou_2021-08-13_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationmeasurementreport_benin-malanville_2022-08-09_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationmeasurementreport_benin-malanville_2023-08-09-final_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationmeasurementreport_benin-parakou_2022-08-12_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationmeasurementreport_benin-parakou_2023-08-12-final_fr_en.pdf
-│   │   ├── solar-measurements_benin-malanville_header_fr_en.xlsx
-│   │   ├── solar-measurements_benin-malanville_qc.csv
-│   │   ├── solar-measurements_benin-malanville_qc_year2.csv
-│   │   ├── solar-measurements_benin-parakou_header_fr_en.xlsx
-│   │   ├── solar-measurements_benin-parakou_qc.csv
-│   │   ├── solar-measurements_benin-parakou_qc_year2.csv
+│   │   ├── benin-malanville.csv
 │   ├── Sierra Leone/
+│   │   ├── sierraleone-bumbuna.csv
 │   └── Togo/
-│       ├── csps-yls_wapp_stationinstallationreport_togo_dapaong_2021-10-24_fr_en.pdf
-│       ├── csps-yls_wapp_stationinstallationreport_togo_davie_2021-11-02_fr_en.pdf
-│       ├── csps-yls_wapp_stationmeasurementreport_togo-dapaong_2022-10-24_fr_en.pdf
-│       ├── csps-yls_wapp_stationmeasurementreport_togo-dapaong_2023-10-24-final_fr_en.pdf
-│       ├── csps-yls_wapp_stationmeasurementreport_togo-davie_2022-11-03_fr_en.pdf
-│       ├── csps-yls_wapp_stationmeasurementreport_togo-davie_2023-11-03-final_fr_en.pdf
-│       ├── solar-measurements_togo-dapaong_header_fr_en.xlsx
-│       ├── solar-measurements_togo-dapaong_qc.csv
-│       ├── solar-measurements_togo-dapaong_qc_year2.csv
-│       ├── solar-measurements_togo-davie_header_fr_en.xlsx
-│       ├── solar-measurements_togo-davie_qc.csv
-│       ├── solar-measurements_togo-davie_qc_year2.csv
+│       ├── togo-dapaong_qc.csv
 └── tests/
     ├── __init__.py
 <!-- TREE END -->
