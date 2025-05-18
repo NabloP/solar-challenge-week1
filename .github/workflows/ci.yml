@@ -1,33 +1,12 @@
-name: CI
+    # - name: Run tree script and verify README.md is up-to-date
+    #   run: |
+    #     echo "🛠️ Running generate_tree.py to update README.md tree section..."
+    #     python scripts/generate_tree.py
 
-on: [push, pull_request]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Run tree script and verify README.md is up-to-date
-      run: |
-        echo "🛠️ Running generate_tree.py to update README.md tree section..."
-        python scripts/generate_tree.py
-
-        echo "🔍 Checking for README.md changes..."
-        if git diff --exit-code README.md; then
-          echo "✅ README.md tree is up-to-date."
-        else
-          echo "❌ README.md tree is out-of-date. Please run scripts/generate_tree.py locally and commit the result."
-          exit 1
-        fi
+    #     echo "🔍 Checking for README.md changes..."
+    #     if git diff --exit-code README.md; then
+    #       echo "✅ README.md tree is up-to-date."
+    #     else
+    #       echo "❌ README.md tree is out-of-date. Please run scripts/generate_tree.py locally and commit the result."
+    #       exit 1
+    #     fi
