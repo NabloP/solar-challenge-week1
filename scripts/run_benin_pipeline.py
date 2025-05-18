@@ -4,10 +4,17 @@
 # Goal: Load, clean, and analyze solar irradiance data for Benin
 # using modular, production-ready code compatible with multiple countries.
 
+import sys
+import os
+
+# Add project root directory to Python path (so "src" becomes importable)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 # 📦 Import modular components
 import os
-from src.benin.load import load_benin_data
+from src.Benin.load import load_benin_data
 from src.clean import clean_solar_data
+from src.report import summarize_data
 from src.plots import (
     plot_time_series,
     plot_cleaning_impact,
