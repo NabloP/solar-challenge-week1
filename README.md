@@ -62,13 +62,17 @@ solar-challenge-week1/
 │       ├── unittests.yml
 ├── data/
 │   ├── benin_clean.csv
+│   ├── sierra_leone_clean.csv
 │   ├── togo_clean.csv
 ├── notebooks/
 │   ├── benin_eda.ipynb
+│   ├── sierra_leone_eda.ipynb
 │   ├── togo_eda.ipynb
 ├── reports/
 │   ├── benin_missing_report.csv
 │   ├── benin_summary_stats.csv
+│   ├── sierra_leone_missing_report.csv
+│   ├── sierra_leone_summary_stats.csv
 │   ├── togo_missing_report.csv
 │   ├── togo_summary_stats.csv
 ├── scripts/
@@ -76,6 +80,7 @@ solar-challenge-week1/
 │   ├── __init__.py
 │   ├── generate_tree.py
 │   ├── run_benin_pipeline.py
+│   ├── run_sierra_leone_pipeline.py
 │   ├── run_togo_pipeline.py
 ├── src/
 │   ├── clean.py
@@ -84,7 +89,8 @@ solar-challenge-week1/
 │   ├── Benin/
 │   │   ├── benin-malanville.csv
 │   │   ├── load.py
-│   ├── Sierra Leone/
+│   ├── Sierra_Leone/
+│   │   ├── load.py
 │   │   ├── sierraleone-bumbuna.csv
 │   └── Togo/
 │       ├── load.py
@@ -102,10 +108,10 @@ solar-challenge-week1/
 
  ☑︎ Project structured and committed
 
- ☐ Exploratory Data Analysis (in progress...)
- + ☑︎ Benin EDA pipeline complete and modularized (Togo & Sierra Leone pending)
+ ☑︎ Exploratory Data Analysis
+ + ☑︎ Benin EDA pipeline complete and modularized  complete and modularized  
  + ☑︎ Togo EDA pipeline complete and modularized  
- + ☐ Sierra Leone pipeline (next)
+ + ☑︎ Sierra Leone pipeline  complete and modularized  
 
 
 ## 📦 What's in This Repo
@@ -163,7 +169,7 @@ python scripts/run_togo_pipeline.py
 
 This script will:
 
-1. Load the raw Togo solar dataset from `src/togo/togo-dapaong_qc.csv`
+1. Load the raw Togo solar dataset from `src/Togo/togo-dapaong_qc.csv`
 
 2. Clean the data (outlier removal, median imputation)
 
@@ -173,6 +179,35 @@ This script will:
 
     - `togo_summary_stats.csv`
     - `togo_missing_report.csv`
+
+5. Produce a full suite of visualizations:
+
+    - Time series plots of GHI, DNI, etc.
+    - Sensor cleaning impact
+    - Correlation heatmap
+    - Wind-solar pair plots
+    - Distributions and bubble chart
+
+⚠️ The pipeline is designed to run from the project root. If executing from /notebooks, it will auto-adjust the working directory.
+
+###To run the modular Sierra Leone pipeline:
+
+```bash
+python scripts/run_sierra_leone_pipeline.py
+```
+
+This script will:
+
+1. Load the raw Sierra Leone solar dataset from `src/Sierra_Leone/sierraleone-bumbuna.csv`
+
+2. Clean the data (outlier removal, median imputation)
+
+3. Export cleaned data to: `data/sierra_leone_clean.csv`
+
+4. Generate summary statistics and missing-value report in: reports/
+
+    - `sierra_leone__summary_stats.csv`
+    - `sierra_leone_missing_report.csv`
 
 5. Produce a full suite of visualizations:
 
