@@ -60,39 +60,27 @@ solar-challenge-week1/
 │   └── workflows/
 │       ├── ci.yml
 │       ├── unittests.yml
+├── data/
+│   ├── benin_clean.csv
 ├── notebooks/
+│   ├── benin_eda.ipynb
+├── reports/
 ├── scripts/
 │   ├── README.md
 │   ├── __init__.py
 │   ├── generate_tree.py
+│   ├── run_benin_pipeline.py
 ├── src/
+│   ├── clean.py
+│   ├── plots.py
+│   ├── report.py
 │   ├── Benin/
-│   │   ├── csps-yls_wapp_stationinstallationreport_benin-malanville_2021-08-08_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationinstallationreport_benin-parakou_2021-08-13_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationmeasurementreport_benin-malanville_2022-08-09_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationmeasurementreport_benin-malanville_2023-08-09-final_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationmeasurementreport_benin-parakou_2022-08-12_fr_en.pdf
-│   │   ├── csps-yls_wapp_stationmeasurementreport_benin-parakou_2023-08-12-final_fr_en.pdf
-│   │   ├── solar-measurements_benin-malanville_header_fr_en.xlsx
-│   │   ├── solar-measurements_benin-malanville_qc.csv
-│   │   ├── solar-measurements_benin-malanville_qc_year2.csv
-│   │   ├── solar-measurements_benin-parakou_header_fr_en.xlsx
-│   │   ├── solar-measurements_benin-parakou_qc.csv
-│   │   ├── solar-measurements_benin-parakou_qc_year2.csv
+│   │   ├── benin-malanville.csv
+│   │   ├── load.py
 │   ├── Sierra Leone/
+│   │   ├── sierraleone-bumbuna.csv
 │   └── Togo/
-│       ├── csps-yls_wapp_stationinstallationreport_togo_dapaong_2021-10-24_fr_en.pdf
-│       ├── csps-yls_wapp_stationinstallationreport_togo_davie_2021-11-02_fr_en.pdf
-│       ├── csps-yls_wapp_stationmeasurementreport_togo-dapaong_2022-10-24_fr_en.pdf
-│       ├── csps-yls_wapp_stationmeasurementreport_togo-dapaong_2023-10-24-final_fr_en.pdf
-│       ├── csps-yls_wapp_stationmeasurementreport_togo-davie_2022-11-03_fr_en.pdf
-│       ├── csps-yls_wapp_stationmeasurementreport_togo-davie_2023-11-03-final_fr_en.pdf
-│       ├── solar-measurements_togo-dapaong_header_fr_en.xlsx
-│       ├── solar-measurements_togo-dapaong_qc.csv
-│       ├── solar-measurements_togo-dapaong_qc_year2.csv
-│       ├── solar-measurements_togo-davie_header_fr_en.xlsx
-│       ├── solar-measurements_togo-davie_qc.csv
-│       ├── solar-measurements_togo-davie_qc_year2.csv
+│       ├── togo-dapaong_qc.csv
 └── tests/
     ├── __init__.py
 <!-- TREE END -->
@@ -107,6 +95,7 @@ solar-challenge-week1/
  ☑︎ Project structured and committed
 
  ☐ Exploratory Data Analysis (in progress...)
+ + ☑︎ Benin EDA pipeline complete and modularized (Togo & Sierra Leone pending)
 
 
 ## 📦 What's in This Repo
@@ -119,11 +108,42 @@ This repository documents the Week 1 challenge for 10 Academy’s AI Mastery Boo
 
 - 🧹 **README auto-updating** via `scripts/generate_tree.py` to keep documentation aligned with project layout
 
-- 📊 **Planned EDA workflows** for Benin, Sierra Leone, and Togo to clean and compare solar datasets
+- 📊 **Modular EDA workflows** for Benin, Sierra Leone, and Togo to clean and compare solar datasets
 
 - 📚 **Clear Git hygiene** (no committed `.venv` or `.csv`), commit messages and pull request usage
 
 - 🧠 **My Contributions:** All project scaffolding, README setup, automation scripts, and CI configuration were done from scratch by me
+
+## 🧪 Usage
+
+To run the modular Benin pipeline:
+
+```bash
+python scripts/run_benin_pipeline.py
+```
+
+This script will:
+
+1. Load the raw Benin solar dataset from `src/Benin/benin-malanville.csv`
+
+2. Clean the data (outlier removal, median imputation)
+
+3. Export cleaned data to: `data/benin_clean.csv`
+
+4. Generate summary statistics and missing-value report in: reports/
+
+    - `benin_summary_stats.csv`
+    - `benin_missing_report.csv`
+
+5. Produce a full suite of visualizations:
+
+    - Time series plots of GHI, DNI, etc.
+    - Sensor cleaning impact
+    - Correlation heatmap
+    - Wind-solar pair plots
+    - Distributions and bubble chart
+
+⚠️ The pipeline is designed to run from the project root. If executing from /notebooks, it will auto-adjust the working directory.
 
 ## 🚀 Author
 Nabil Mohamed
