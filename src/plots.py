@@ -1,17 +1,40 @@
+"""
+plots.py – Solar Data Visualization Module
+------------------------------------------
+
+Contains reusable plotting functions for time series, correlations,
+sensor performance, distributions, and environmental relationships
+in solar radiation datasets.
+
+All functions are designed for modular integration in notebooks,
+scripts, and dashboards.
+
+Author: Nabil Mohamed
+"""
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# ------------------------------------------------------------------------------
+# 📈 1. Time Series Visualization
+# ------------------------------------------------------------------------------
 def plot_time_series(df, country):
     """
-    📈 Time Series Analysis
-    Plots GHI, DNI, DHI, and Tamb over time to examine solar trends and temperature variation.
-    Useful to detect seasonal cycles, peak hours, and anomalies in data collection.
-    """
-    fig, axs = plt.subplots(2, 2, figsize=(14, 8))
-    cols = ['GHI', 'DNI', 'DHI', 'Tamb']
+    Plot GHI, DNI, DHI, and Ambient Temperature (Tamb) over time.
 
-    for ax, col in zip(axs.flat, cols):
-        ax.plot(df["Timestamp"], df[col])
+    Parameters:
+    - df (pd.DataFrame): Cleaned dataframe for one country
+    - country (str): Country name for plot titles
+
+    Purpose:
+    - Detects seasonal variation, daily cycles, or sensor anomalies
+    - Highlights irradiance behavior across different solar components
+    """
+    fig, axs = plt.subplots(2, 2, figsize=(14, 8))  # 2x2 grid of plots
+    cols = ['GHI', 'DNI', 'DHI', 'Tamb']            # Metrics to plot
+
+    for ax, col in zip(axs.flat, cols):  # One plot per column
+        ax.plot(df["Timestamp"], df[col])  # Line plot of time series
         ax.set_title(f"{col} over Time for {country.title()}")
         ax.set_xlabel("Timestamp")
         ax.set_ylabel(col)
@@ -19,11 +42,19 @@ def plot_time_series(df, country):
     plt.tight_layout()
     plt.show()
 
+# ------------------------------------------------------------------------------
+# 🧼 2. Sensor Cleaning Impact
+# ------------------------------------------------------------------------------
 def plot_cleaning_impact(df):
     """
-    🧼 Cleaning Impact Analysis
-    Compares average sensor output (ModA and ModB) before and after cleaning events.
-    Cleaning = 1 implies maintenance occurred at that time.
+    Compare ModA and ModB sensor output before and after cleaning events.
+
+    Parameters:
+    - df (pd.DataFrame): Cleaned dataframe containing 'Cleaning' and ModA/B
+
+    Purpose:
+    - Verifies if cleaning had a measurable effect on sensor output
+    - Encourages proactive maintenance planning
     """
     df.groupby("Cleaning")[["ModA", "ModB"]].mean().plot(kind='bar', figsize=(8, 5))
     plt.title("Sensor Readings Before vs After Cleaning")
@@ -32,11 +63,19 @@ def plot_cleaning_impact(df):
     plt.tight_layout()
     plt.show()
 
+# ------------------------------------------------------------------------------
+# 🔍 3. Correlation Heatmap
+# ------------------------------------------------------------------------------
 def plot_correlation(df):
     """
-    🔍 Correlation Heatmap
-    Visualizes relationships between key solar and temperature metrics.
-    Helps identify which features are redundant or strongly related (e.g., GHI ~ DNI).
+    Visualize correlations between solar irradiance and module temperature.
+
+    Parameters:
+    - df (pd.DataFrame): Cleaned dataframe
+
+    Purpose:
+    - Identifies multicollinearity among solar inputs
+    - Supports feature selection for modeling
     """
     corr_cols = ['GHI', 'DNI', 'DHI', 'TModA', 'TModB']
     corr = df[corr_cols].corr()
@@ -46,29 +85,57 @@ def plot_correlation(df):
     plt.tight_layout()
     plt.show()
 
+# ------------------------------------------------------------------------------
+# 📊 4. Pairwise Scatter Matrix
+# ------------------------------------------------------------------------------
 def plot_pairwise(df):
     """
-    📊 Pairwise Scatter Matrix
-    Explores relationships between wind features and solar output (GHI).
-    Useful for detecting non-linear trends, clusters, or outliers.
+    Create scatter matrix for wind and GHI features.
+
+    Parameters:
+    - df (pd.DataFrame): Cleaned dataframe
+
+    Purpose:
+    - Explore joint distributions and clustering patterns
+    - Reveal nonlinear or directional relationships
     """
     sns.pairplot(df, vars=['WS', 'WSgust', 'WD', 'GHI'], kind='scatter')
+    plt.suptitle("Pairwise Wind & Irradiance Relationships", y=1.02)
+    plt.tight_layout()
+    plt.show()
 
+# ------------------------------------------------------------------------------
+# 📉 5. Distribution Histograms
+# ------------------------------------------------------------------------------
 def plot_distribution(df):
     """
-    📉 Distribution Analysis
-    Plots histograms for GHI and Wind Speed to inspect skewness and spread.
+    Show histograms of GHI and Wind Speed to assess skewness and range.
+
+    Parameters:
+    - df (pd.DataFrame): Cleaned dataframe
+
+    Purpose:
+    - Detect outlier ranges or need for normalization
+    - Visually confirm distributional assumptions
     """
     df[['GHI', 'WS']].hist(bins=30, figsize=(10, 4))
     plt.suptitle("Distributions of GHI and Wind Speed")
     plt.tight_layout()
     plt.show()
 
+# ------------------------------------------------------------------------------
+# 🌡️ 6. Temperature vs Relative Humidity
+# ------------------------------------------------------------------------------
 def plot_temperature_vs_rh(df):
     """
-    🌡️ Temperature vs Humidity
-    Scatter plot to examine how Relative Humidity correlates with Ambient Temperature.
-    Helps detect inverse seasonal relationships or sensor drift.
+    Scatter plot showing how RH varies with Tamb.
+
+    Parameters:
+    - df (pd.DataFrame): Cleaned dataframe
+
+    Purpose:
+    - Examine inverse humidity–temperature effects
+    - Spot trends that could affect sensor efficiency
     """
     sns.scatterplot(data=df, x='RH', y='Tamb')
     plt.title("Relative Humidity vs Ambient Temperature")
@@ -77,18 +144,34 @@ def plot_temperature_vs_rh(df):
     plt.tight_layout()
     plt.show()
 
+# ------------------------------------------------------------------------------
+# 💠 7. Bubble Chart: GHI vs Tamb (RH + BP)
+# ------------------------------------------------------------------------------
 def plot_bubble_chart(df):
     """
-    💠 Bubble Chart: GHI vs Tamb
-    - X-axis: Global Horizontal Irradiance
-    - Y-axis: Ambient Temperature
-    - Size: Relative Humidity
-    - Hue: Barometric Pressure
+    Multi-dimensional scatter plot visualizing:
 
-    This plot provides a compact overview of how solar output, temperature, and air conditions interact.
+    - X-axis: GHI
+    - Y-axis: Tamb
+    - Size: RH (Relative Humidity)
+    - Hue: BP (Barometric Pressure)
+
+    Parameters:
+    - df (pd.DataFrame): Cleaned dataframe
+
+    Purpose:
+    - Visualize how atmospheric variables jointly impact solar output
+    - Highlight clusters or edge-case weather conditions
     """
-    sns.scatterplot(data=df, x='GHI', y='Tamb', size='RH', hue='BP', alpha=0.6)
-    plt.title("Bubble Chart: GHI vs Tamb (size=RH, hue=BP)")
+    sns.scatterplot(
+        data=df,
+        x='GHI',
+        y='Tamb',
+        size='RH',
+        hue='BP',
+        alpha=0.6
+    )
+    plt.title("Bubble Chart: GHI vs Tamb (size = RH, hue = BP)")
     plt.xlabel("GHI (W/m²)")
     plt.ylabel("Tamb (°C)")
     plt.tight_layout()

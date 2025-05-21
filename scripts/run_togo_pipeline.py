@@ -4,18 +4,37 @@
 # Goal: Load, clean, and analyze solar irradiance data for Togo
 # using modular, production-ready code compatible with multiple countries.
 
+"""
+run_togo_pipeline.py – Full Solar Data Pipeline for Togo
+---------------------------------------------------------
+
+Performs ingestion, cleaning, summary reporting, and exploratory
+visualization of the Togo solar irradiance dataset.
+
+This runner adheres to:
+- Modular pipeline design
+- Extensive inline commenting
+- Alignment with the B5W0 rubric
+
+Author: Nabil Mohamed
+"""
+
+# ------------------------------------------------------------------------------
+# 📂 Environment Setup – Add root path to sys.path for import resolution
+# ------------------------------------------------------------------------------
+
 import sys
 import os
-
-# Add project root directory to Python path (so "src" becomes importable)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# 📦 Import modular components
-import os
-from src.Togo.load import load_togo_data
-from src.clean import clean_solar_data
-from src.report import summarize_data
-from src.plots import (
+# ------------------------------------------------------------------------------
+# 📦 Module Imports – Loader, Cleaner, Reporter, Visuals
+# ------------------------------------------------------------------------------
+
+from src.Togo.load import TogoDataLoader                            # Country-specific loader
+from src.clean import SolarDataCleaner                              # Object-oriented cleaner
+from src.report import SolarReportGenerator                         # Summary + null reporter
+from src.plots import (                                             # Visualization suite
     plot_time_series,
     plot_cleaning_impact,
     plot_correlation,
@@ -25,70 +44,74 @@ from src.plots import (
     plot_bubble_chart
 )
 
-# 🔧 Configuration
+# ------------------------------------------------------------------------------
+# 🔧 Configuration – Set file paths and output targets
+# ------------------------------------------------------------------------------
+
 COUNTRY = "togo"
-INPUT_FILE = f"src/Togo/togo-dapaong_qc.csv"
+INPUT_FILE = "src/Togo/togo-dapaong_qc.csv"
 OUTPUT_FILE = f"data/{COUNTRY}_clean.csv"
 
-# ================================================
-# ✅ Step 1: Load the raw solar dataset
-# - Automatically parses timestamp column
-# - Falls back to latin1 encoding if needed
-# ================================================
-df = load_togo_data(INPUT_FILE)
+# ------------------------------------------------------------------------------
+# ✅ Step 1: Load Raw Dataset
+# ------------------------------------------------------------------------------
 
-# ================================================
-# ✅ Step 1.5: Summary statistics & null analysis
-# - Prints describe() and missing value breakdown
-# ================================================
-summarize_data(df, country=COUNTRY, save=True)
+# Instantiate TogoDataLoader and load dataset
+loader = TogoDataLoader(INPUT_FILE)
+df = loader.load()
 
-# ================================================
-# ✅ Step 2: Clean the dataset
-# - Converts stringified numbers to numeric
-# - Flags and removes Z-score outliers
-# - Imputes missing values using column medians
-# ================================================
-df_clean = clean_solar_data(df)
+# ------------------------------------------------------------------------------
+# 📉 Step 1.5: Summary Report
+# ------------------------------------------------------------------------------
 
-# ================================================
-# ✅ Step 3: Export the cleaned DataFrame
-# - Saves to `data/togo_clean.csv`
-# - Directory is created if it doesn't exist
-# ================================================
+# Initialize reporter and print+save basic diagnostics
+reporter = SolarReportGenerator(df, country=COUNTRY)
+reporter.generate(save=True)
+
+# ------------------------------------------------------------------------------
+# 🧼 Step 2: Clean Dataset
+# ------------------------------------------------------------------------------
+
+# Clean using numeric coercion, Z-score outlier removal, and median imputation
+cleaner = SolarDataCleaner(df)
+df_clean = cleaner.run()
+
+# ------------------------------------------------------------------------------
+# 💾 Step 3: Save Cleaned Output
+# ------------------------------------------------------------------------------
+
+# Create output directory (if it doesn't exist) and save to CSV
 os.makedirs("data", exist_ok=True)
 df_clean.to_csv(OUTPUT_FILE, index=False)
 print(f"✅ Cleaned data saved to: {OUTPUT_FILE} ({COUNTRY}_clean.csv)")
 
-# ================================================
-# ✅ Step 4: Run Exploratory Data Analysis (EDA)
-# - Generates time series, correlation, and sensor plots
-# - Used for identifying solar trends and anomalies
-# ================================================
+# ------------------------------------------------------------------------------
+# 📊 Step 4: Exploratory Data Analysis (EDA)
+# ------------------------------------------------------------------------------
 
-# 📈 Solar metrics over time (GHI, DNI, DHI, Tamb)
+# 📈 Time trends in solar and temperature metrics
 plot_time_series(df_clean, country=COUNTRY)
 print("✅ GHI and DNI peak around midday, showing viable solar generation trends.")
 
-# 🧼 Cleaning impact on sensor output
+# 🧼 Effect of sensor cleaning on ModA/ModB readings
 plot_cleaning_impact(df_clean)
 print("✅ Sensor readings (ModA/ModB) are consistently higher after cleaning.")
 
-# 🔍 Heatmap of feature correlations
+# 🔍 Correlation analysis among key irradiance and temperature features
 plot_correlation(df_clean)
 print("✅ GHI, DNI, and DHI are strongly correlated. TModA/TModB also align.")
 
-# 📊 Wind and solar relationships (pairwise scatter)
+# 📊 Pairwise scatterplots of wind and solar inputs
 plot_pairwise(df_clean)
 
 # 📉 Distributions of GHI and wind speed
 plot_distribution(df_clean)
 print("✅ GHI is right-skewed; wind speed shows moderate variability.")
 
-# 🌡️ RH vs Temperature
+# 🌡️ RH vs Tamb relationship
 plot_temperature_vs_rh(df_clean)
 print("✅ Relative humidity is inversely related to ambient temperature.")
 
-# 💠 Bubble chart of GHI vs Tamb
+# 💠 Bubble chart overlay of multiple environmental variables
 plot_bubble_chart(df_clean)
 print("✅ Higher GHI and Tamb values tend to occur with moderate RH and BP.")
