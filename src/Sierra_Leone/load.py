@@ -1,24 +1,68 @@
+"""
+sierra_leone/load.py – Sierra Leone Solar Dataset Loader
+---------------------------------------------------------
+
+Wraps the general-purpose BaseCSVLoader for Sierra Leone-specific solar data.
+Includes encoding fallback, timestamp parsing, and diagnostic printouts.
+
+Author: Nabil Mohamed
+"""
+
 import pandas as pd
+from src.loader import BaseCSVLoader  # General-purpose CSV loader
 import os
 
-def read_csv_safe(path):
-    """Safely load a CSV file with fallback encoding and timestamp parsing."""
-    try:
-        return pd.read_csv(path, parse_dates=["Timestamp"])
-    except UnicodeDecodeError:
-        print(f"⚠️ Encoding issue in {path}. Retrying with latin1...")
-        return pd.read_csv(path, parse_dates=["Timestamp"], encoding="latin1")
+# ------------------------------------------------------------------------------
+# 🇸🇱 Sierra Leone Dataset Loader
+# ------------------------------------------------------------------------------
 
-def load_sierra_leone_data(path: str) -> pd.DataFrame:
-    """Load and return Sierra Leone solar data, sorted by Timestamp."""
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"❌ File not found: {path}")
-    
-    df = read_csv_safe(path)
-    df = df.sort_values("Timestamp").reset_index(drop=True)
-    
-    print(f"✅ Loaded: {path}")
-    print("🔢 Shape:", df.shape)
-    print("🧪 Columns:", df.columns.tolist())
-    
-    return df
+class SierraLeoneDataLoader:
+    """
+    Specialized loader for Sierra Leone's cleaned solar irradiance dataset.
+
+    Functionality:
+    - Parses 'Timestamp' column into datetime format
+    - Handles UTF-8 and fallback to 'latin1' encoding
+    - Sorts records chronologically
+    - Prints concise diagnostics for auditability
+
+    Example:
+    >>> loader = SierraLeoneDataLoader("data/sierra_leone_clean.csv")
+    >>> df_sl = loader.load()
+    """
+
+    def __init__(self, path: str):
+        """
+        Initialize the loader with the dataset path.
+
+        Parameters:
+        ----------
+        path : str
+            Path to the cleaned Sierra Leone CSV file.
+        """
+        self.path = path
+        self.df = None
+
+    def load(self) -> pd.DataFrame:
+        """
+        Load the dataset with timestamp parsing and encoding fallback.
+
+        Returns:
+        --------
+        pd.DataFrame
+            Chronologically ordered Sierra Leone solar dataset.
+        """
+        # ✅ Use the base loader for safe loading with timestamp parsing
+        loader = BaseCSVLoader(path=self.path, parse_dates=["Timestamp"], verbose=False)
+        df = loader.load()
+
+        # 🧭 Ensure dataset is sorted chronologically by measurement time
+        df = df.sort_values("Timestamp").reset_index(drop=True)
+
+        # 📢 Print structured diagnostic output for traceability
+        print(f"📍 Sierra Leone Data Loaded from: {self.path}")
+        print(f"🔢 Shape: {df.shape}")
+        print(f"🧪 Columns: {df.columns.tolist()}")
+
+        self.df = df
+        return df

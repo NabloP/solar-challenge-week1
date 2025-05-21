@@ -1,24 +1,69 @@
+"""
+benin/load.py – Benin Solar Dataset Loader
+------------------------------------------
+
+Wraps the general-purpose BaseCSVLoader for Benin-specific data.
+Adds timestamp sorting and diagnostics with clear logging.
+
+Author: Nabil Mohamed
+"""
+
 import pandas as pd
+from src.loader import BaseCSVLoader  # Reuse the general-purpose CSV loader
 import os
 
-def read_csv_safe(path):
-    """Safely load a CSV file with fallback encoding and timestamp parsing."""
-    try:
-        return pd.read_csv(path, parse_dates=["Timestamp"])
-    except UnicodeDecodeError:
-        print(f"⚠️ Encoding issue in {path}. Retrying with latin1...")
-        return pd.read_csv(path, parse_dates=["Timestamp"], encoding="latin1")
+# ------------------------------------------------------------------------------
+# 🇧🇯 Benin Dataset Loader
+# ------------------------------------------------------------------------------
 
-def load_benin_data(path: str) -> pd.DataFrame:
-    """Load and return Benin solar data, sorted by Timestamp."""
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"❌ File not found: {path}")
-    
-    df = read_csv_safe(path)
-    df = df.sort_values("Timestamp").reset_index(drop=True)
-    
-    print(f"✅ Loaded {path}")
-    print("🔢 Shape:", df.shape)
-    print("🧪 Columns:", df.columns.tolist())
-    
-    return df
+class BeninDataLoader:
+    """
+    Specialized loader for Benin's cleaned solar irradiance dataset.
+
+    Builds on top of BaseCSVLoader:
+    - Handles timestamp parsing
+    - Applies encoding fallback if necessary
+    - Sorts chronologically
+    - Logs key file diagnostics
+
+    Example:
+    >>> loader = BeninDataLoader("data/benin_clean.csv")
+    >>> df_benin = loader.load()
+    """
+
+    def __init__(self, path: str):
+        """
+        Initialize loader for Benin's dataset.
+
+        Parameters:
+        ----------
+        path : str
+            Path to the cleaned Benin CSV file.
+        """
+        self.path = path  # Store path for internal reference
+        self.df = None    # Placeholder for the loaded DataFrame
+
+    def load(self) -> pd.DataFrame:
+        """
+        Load the CSV, sort by timestamp, and print diagnostics.
+
+        Returns:
+        --------
+        pd.DataFrame
+            Chronologically ordered Benin solar dataset.
+        """
+        # ✅ Use shared CSV loader with 'Timestamp' column parsing
+        loader = BaseCSVLoader(path=self.path, parse_dates=["Timestamp"], verbose=False)
+        df = loader.load()
+
+        # 📊 Sort the dataset chronologically
+        df = df.sort_values("Timestamp").reset_index(drop=True)
+
+        # 💬 Diagnostics (customized for Benin loader)
+        print(f"📍 Benin Data Loaded from: {self.path}")
+        print(f"🔢 Shape: {df.shape}")
+        print(f"🧪 Columns: {df.columns.tolist()}")
+
+        # ✅ Assign to self and return
+        self.df = df
+        return df
