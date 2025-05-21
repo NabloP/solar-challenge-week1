@@ -1,7 +1,19 @@
 # Solar Challenge Week 1 - 10 Academy
 
 ## 🗂 Challenge Context
-This repository is part of the 10 Academy B5W0: Solar Data Discovery challenge. It explores solar radiation and environmental sensor data from Benin, Togo, and Sierra Leone to identify high-potential regions for solar investment. It includes data cleaning, EDA, cross-country analysis, and a Streamlit dashboard for interactive insights.
+This repository contains the submission for 10 Academy’s B5W0: Solar Data Discovery Challenge. The goal is to evaluate solar irradiance and environmental sensor data across Benin, Togo, and Sierra Leone to identify high-potential regions for solar farm investment.
+
+The project includes:
+
+📊 Data cleaning and preprocessing pipelines
+
+🔬 Exploratory Data Analysis (EDA)
+
+🧠 Modular code using OOP principles
+
+⚙️ CI/CD pipeline
+
+🖥️ Interactive Streamlit dashboard (planned)
 
 ## 🔧 Project Setup
 
@@ -66,6 +78,7 @@ solar-challenge-week1/
 │   ├── togo_clean.csv
 ├── notebooks/
 │   ├── benin_eda.ipynb
+│   ├── compare_countries.ipynb
 │   ├── sierra_leone_eda.ipynb
 │   ├── togo_eda.ipynb
 ├── reports/
@@ -80,19 +93,26 @@ solar-challenge-week1/
 │   ├── __init__.py
 │   ├── generate_tree.py
 │   ├── run_benin_pipeline.py
+│   ├── run_compare_pipeline.py
 │   ├── run_sierra_leone_pipeline.py
 │   ├── run_togo_pipeline.py
 ├── src/
+│   ├── __init__.py
 │   ├── clean.py
+│   ├── compare_pipeline.py
+│   ├── loader.py
 │   ├── plots.py
 │   ├── report.py
 │   ├── Benin/
+│   │   ├── __init__.py
 │   │   ├── benin-malanville.csv
 │   │   ├── load.py
 │   ├── Sierra_Leone/
+│   │   ├── __init__.py
 │   │   ├── load.py
 │   │   ├── sierraleone-bumbuna.csv
 │   └── Togo/
+│       ├── __init__.py
 │       ├── load.py
 │       ├── togo-dapaong_qc.csv
 └── tests/
@@ -100,18 +120,17 @@ solar-challenge-week1/
 <!-- TREE END -->
 
 ## ✅ Status
- ☑︎ GitHub repo initialized
-
- ☑︎ Virtual environment set up
-
- ☑︎ CI/CD via GitHub Actions configured
-
- ☑︎ Project structured and committed
-
- ☑︎ Exploratory Data Analysis
- + ☑︎ Benin EDA pipeline complete and modularized  complete and modularized  
- + ☑︎ Togo EDA pipeline complete and modularized  
- + ☑︎ Sierra Leone pipeline  complete and modularized  
+- ☑️ Repository initialized
+- ☑️ GitHub Actions CI configured
+- ☑️ Modular OOP pipelines for each country
+- ☑️ Summary + missing value diagnostics
+- ☑️ Full EDA including:
+    - Time Series Trends
+    - Sensor Cleaning Impact
+    - Correlation Heatmap
+    - Pairwise Scatter Matrix
+    - Distribution Plots
+    - Bubble Chart
 
 
 ## 📦 What's in This Repo
@@ -218,6 +237,37 @@ This script will:
     - Distributions and bubble chart
 
 ⚠️ The pipeline is designed to run from the project root. If executing from /notebooks, it will auto-adjust the working directory.
+
+## To run the modular Compare Countries pipeline:
+
+```bash
+python scripts/run_compare_pipeline.py
+```
+This script will:
+
+1. Load the cleaned datasets for Benin, Togo, and Sierra Leone from the data/ directory:
+    - `data/benin_clean.csv`
+    - `data/togo_clean.csv`
+    - `data/sierra_leone_clean.csv`
+2. Run statistical analysis:
+    - Shapiro–Wilk test on GHI per country (tests for normality)
+    - Kruskal–Wallis test comparing GHI distributions (non-parametric ANOVA)
+3. Produce cross-country visualizations:
+    - Boxplots of GHI, DNI, DHI distributions by country
+    - Bar chart comparing average GHI across countries
+4. Print consolidated summary statistics and missing-value report:
+    - Mean, median, std, and count by metric/country
+    - Null counts and percentages grouped by country
+
+⚠️ The pipeline requires that all three cleaned `.csv` files already exist in `data/`. Ensure you've run the Benin, Togo, and Sierra Leone pipelines first. The script is designed to run from the project root and will auto-adjust if launched from a subdirectory.
+
+## 🧠 Design Philosophy
+This project was developed with a focus on:
+
+- ✅ Modular Python design using classes, helper modules, and runners
+- ✅ High commenting density to meet AI and human readability expectations
+- ✅ Reproducibility through consistent Git hygiene and generate_tree.py
+- ✅ Rubric alignment with clear insights and analysis pipelines per country
 
 ## 🚀 Author
 Nabil Mohamed
